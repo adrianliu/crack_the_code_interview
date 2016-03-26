@@ -20,14 +20,46 @@ public class ALLinkedList {
     public static void main(String[] args) {
         ALLinkedList list = new ALLinkedList();
         list.addLast(1);
-        list.addLast(1);
-        list.addLast(1);
-        list.addLast(1);
-        list.addLast(1);
+        list.addLast(2);
+        list.addLast(3);
+        list.addLast(4);
+        list.addLast(5);
+        list.addLast(6);
+        list.addLast(7);
+        list.addLast(8);
+        list.addLast(9);
+        list.addLast(10);
         System.out.println(list.toString());
         list.removeDuplicates2();
         System.out.println(list.toString());
 
+        System.out.println("nth last node value is: ");
+        Node nthLastNode = list.findNthLastNode(10);
+        if(nthLastNode != null) {
+            System.out.println(nthLastNode.val);
+        } else {
+            System.out.println("does not exist.");
+        }
+
+
+    }
+
+
+    private Node findNthLastNode(int n) {
+        Node front = dummyHead;
+        Node back = front;
+        for(int i = 0; i < n;i++) {
+            front = front.next;
+            if(front == null) {
+                return null;
+            }
+        }
+
+        while(front != null) {
+            front = front.next;
+            back = back.next;
+        }
+        return back;
     }
 
     //Using Hashtable
