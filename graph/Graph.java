@@ -245,14 +245,14 @@ public class Graph<V>{
         return false;
     }
 
-    public void bfs(Graph graph, V source, Set<V> visited) {
+    public void bfs(V source, Set<V> visited) {
         Queue<V> q = new LinkedList<>();
         q.add(source);
         System.out.print(" " + source);
         visited.add(source);
         while(!q.isEmpty()) {
             V temp = q.poll();
-            List<V> neighbours = graph.getAdjacentVertices(temp);
+            List<V> neighbours = this.getAdjacentVertices(temp);
             for(V a: neighbours) {
                 if(!visited.contains(a)) {
                     System.out.print(" " + a);
@@ -263,23 +263,23 @@ public class Graph<V>{
         }
     }
 
-    public void dfsRecursive(Graph graph, V source, Set<V> visited) {
+    public void dfsRecursive(V source, Set<V> visited) {
 
         System.out.print(" " + source);
         visited.add(source);
-        List<V> neighbours = graph.getAdjacentVertices(source);
+        List<V> neighbours = this.getAdjacentVertices(source);
         for(V a: neighbours) {
             if(!visited.contains(a)) {
-                dfsRecursive(graph, a, visited);
+                dfsRecursive(a, visited);
             }
         }
 
 
     }
 
-    public void dfsNonRecursive(Graph graph, V source) {
+    public void dfsNonRecursive(V source) {
         Objects.requireNonNull(source, "source is mandatory!");
-        if(graph == null || graph.isEmpty()) {
+        if(this == null || this.isEmpty()) {
             throw new IllegalStateException("Valid graph object is required !");
         }
         Stack<V> stack = new Stack<>();
@@ -298,7 +298,7 @@ public class Graph<V>{
                 topVertex = stack.peek();
             }
 
-            List<V> neighbours = graph.getAdjacentVertices(topVertex);
+            List<V> neighbours = this.getAdjacentVertices(topVertex);
             if(!neighbours.isEmpty() && hasUnvisitedNeighbour(neighbours, visited)) {
                 for(V a: neighbours) {
                     if(!visited.contains(a)) {
@@ -317,16 +317,11 @@ public class Graph<V>{
 
     }
 
-
-    /**
-     * Method to unit test
-     */
-    public static void main(String[] args) throws IOException{
-
+    public static Graph createGraphFromFile(String fileName) throws IOException{
+        FileInputStream fsStream = new FileInputStream(fileName);
         //create a Graph from input file.
         Graph<String> graph = new Graph<String>();
 
-        FileInputStream fsStream = new FileInputStream("input.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(fsStream));
 
         String strLine;
@@ -339,17 +334,33 @@ public class Graph<V>{
                 graph.addEdge(source, dest);
             }
         }
-        System.out.println(graph.toString());
-
         //close the input stream
         br.close();
+        return graph;
 
-        //graph.dfsNonRecursive(graph, "1");
+    }
 
+
+    /**
+     * Method to unit test
+     */
+    public static void main(String[] args) throws IOException{
+        String fileName = "input.txt";
+        Graph graph = createGraphFromFile(fileName);
+
+        System.out.print("Non recursive DFS: ");
+        graph.dfsNonRecursive("0");
+        System.out.println();
+
+        System.out.print("recursive DFS: ");
         Set<String> visited = new HashSet<>();
-        //graph.dfsRecursive(graph,"0", visited);
+        graph.dfsRecursive("0", visited);
+        System.out.println();
 
-        graph.bfs(graph,"0", visited);
+        System.out.print("BFS: ");
+        Set<String> bfsVisited = new HashSet<>();
+        graph.bfs("0", bfsVisited);
+        System.out.println();
 
 
 
