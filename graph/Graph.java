@@ -263,6 +263,11 @@ public class Graph<V>{
         }
     }
 
+    public boolean isCyclic(V source) {
+
+        return false;
+    }
+
     public void dfsRecursive(V source, Set<V> visited) {
 
         System.out.print(" " + source);
@@ -284,19 +289,14 @@ public class Graph<V>{
         }
         Stack<V> stack = new Stack<>();
         Set<V> visited = new HashSet<>();
-        System.out.print(" " + source);
         visited.add(source);
         stack.push(source);
+        System.out.print(" " + source);
 
-        boolean pop = false;
         V topVertex;
-
         while(!stack.isEmpty()) {
-            if(pop == true) {
-                topVertex = stack.pop();
-            } else {
-                topVertex = stack.peek();
-            }
+
+            topVertex = stack.peek();
 
             List<V> neighbours = this.getAdjacentVertices(topVertex);
             if(!neighbours.isEmpty() && hasUnvisitedNeighbour(neighbours, visited)) {
@@ -305,12 +305,11 @@ public class Graph<V>{
                         System.out.print(" " + a);
                         visited.add(a);
                         stack.push(a);
-                        //break from loop if an unvisited neighbour is found.
                         break;
                     }
                 }
             } else {
-                pop = true;
+                stack.pop();
             }
         }
 
@@ -361,6 +360,10 @@ public class Graph<V>{
         Set<String> bfsVisited = new HashSet<>();
         graph.bfs("0", bfsVisited);
         System.out.println();
+
+
+        System.out.print("Cycle: ");
+        System.out.println(graph.isCyclic("0"));
 
 
 
