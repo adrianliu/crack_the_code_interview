@@ -40,9 +40,8 @@ public class ALLinkedList {
         } else {
             System.out.println("does not exist.");
         }
-
-
     }
+
 
 
     private Node findNthLastNode(int n) {
