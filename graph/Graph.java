@@ -264,11 +264,67 @@ public class Graph<V>{
     }
 
     public boolean isCyclic(V source) {
+        Hashtable<V, V> parent = new Hashtable<>();
+
+        Stack<V> stack = new Stack<>();
+        Set<V> visited = new HashSet<>();
+        visited.add(source);
+        stack.push(source);
+        System.out.print(" " + source);
+        V topVertex;
+        while(!stack.isEmpty()) {
+
+            topVertex = stack.peek();
+            List<V> neighbours = this.getAdjacentVertices(topVertex);
+            for(V a: neighbours) {
+                if(!a.equals(parent.get(topVertex)) && visited.contains(a)) {
+                    return true;
+                }
+            }
+
+            if(!neighbours.isEmpty() && hasUnvisitedNeighbour(neighbours, visited)) {
+
+                for(V a: neighbours) {
+
+                    if(!visited.contains(a)) {
+                        parent.put(a, topVertex);
+                        System.out.print(" " + a);
+                        visited.add(a);
+                        stack.push(a);
+                        break;
+                    }
+                }
+            } else {
+                stack.pop();
+            }
+        }
 
         return false;
     }
 
+
+    public boolean isCyclicRecursive(V source, Set<V> visited, Hashtable<V,V> parent) {
+
+        visited.add(source);
+        System.out.print(" " + source);
+        List<V> neighbours = this.getAdjacentVertices(source);
+        for(V a: neighbours) {
+            if(!visited.contains(a)) {
+                parent.put(a, source);
+                isCyclicRecursive(a, visited, parent);
+            } else {
+                if(!a.equals(parent.get(source))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
     public void dfsRecursive(V source, Set<V> visited) {
+
+
 
         System.out.print(" " + source);
         visited.add(source);
@@ -287,10 +343,13 @@ public class Graph<V>{
         if(this == null || this.isEmpty()) {
             throw new IllegalStateException("Valid graph object is required !");
         }
+//        Hashtable<V, V> parent = new Hashtable<>();
+        int[] parent = new int[9];
         Stack<V> stack = new Stack<>();
         Set<V> visited = new HashSet<>();
         visited.add(source);
         stack.push(source);
+        parent[Integer.parseInt((String)source)] = -1;
         System.out.print(" " + source);
 
         V topVertex;
@@ -302,6 +361,7 @@ public class Graph<V>{
             if(!neighbours.isEmpty() && hasUnvisitedNeighbour(neighbours, visited)) {
                 for(V a: neighbours) {
                     if(!visited.contains(a)) {
+                        parent[Integer.parseInt((String)a)] = Integer.parseInt((String)topVertex);
                         System.out.print(" " + a);
                         visited.add(a);
                         stack.push(a);
@@ -312,6 +372,15 @@ public class Graph<V>{
                 stack.pop();
             }
         }
+        System.out.println("parent: ");
+
+        for(int i = 0;i < 9;i++) {
+            System.out.print(parent[i] + " ");
+        }
+
+//        for(V key: parent.keySet()) {
+//            System.out.print("parent: " + parent.get(key) + " child: " + key);
+//        }
 
 
     }
@@ -363,7 +432,9 @@ public class Graph<V>{
 
 
         System.out.print("Cycle: ");
-        System.out.println(graph.isCyclic("0"));
+        Set<String> cycleVisited = new HashSet<>();
+        Hashtable<String, String> parent = new Hashtable<>();
+        System.out.println(graph.isCyclicRecursive("0",cycleVisited,parent));
 
 
 
